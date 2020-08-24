@@ -22,7 +22,7 @@ screen = pygame.display.set_mode(screenSize)
 # Colours
 black = (0, 0, 0)
 white = (255, 255, 255)
-green = (34, 139, 34)
+green = (0, 255, 0)
 red = (255, 0, 0)
 grey = (100, 100, 100)
 pink = (219, 112, 147)
@@ -69,22 +69,22 @@ def drawMouse(mouseX, mouseY):
 
 # Winner screen
 def winner(player):
-    if player == "player1":
+    if player == "player2":
         screen.fill(black)
         for segment in body1:
             pygame.draw.rect(screen, grey, segment)
         drawMouse(mouseX, mouseY)
         Snake.drawSnake(snake2)
-        win = bigfont.render("Player 2 Wins!", True, green)
+        win = bigfont.render("Yellow Wins!", True, green)
         screen.blit(win, (350, 250))
 
-    if player == "player2":
+    if player == "player1":
         screen.fill(black)
         for segment in body2:
             pygame.draw.rect(screen, grey, segment)
         drawMouse(mouseX, mouseY)
         Snake.drawSnake(snake1)
-        win = bigfont.render("Player 1 Wins!", True, green)
+        win = bigfont.render("Blue Wins!", True, green)
         screen.blit(win, (350, 250))
 
 
@@ -96,16 +96,16 @@ def collisions():
     snakeBody2 = body2[0:-1]
 
     if snakeHead1 in snakeBody1:
-        winner("player1")
+        winner("player2")
         return True
     elif snakeHead2 in snakeBody2:
-        winner("player2")
-        return True
-    elif snakeHead1 in body2:
         winner("player1")
         return True
-    elif snakeHead2 in body1:
+    elif snakeHead1 in body2:
         winner("player2")
+        return True
+    elif snakeHead2 in body1:
+        winner("player1")
         return True
 
 
