@@ -38,6 +38,8 @@ bigfont = pygame.font.Font('freesansbold.ttf', 60)
 # Snake variables
 snakeSide = 15
 
+# ALEX: Are these all multiples of 15 (snakeSide)? I think I would probably keep all the coordinates in
+# grid (e.g. screen / 15) coordinates rather than pixel coordinates - as it's easier to read. But up to you!
 body1 = [(375, 300, snakeSide, snakeSide), (390, 300, snakeSide, snakeSide), (405, 300, snakeSide, snakeSide),
          (420, 300, snakeSide, snakeSide), (435, 300, snakeSide, snakeSide), (450, 300, snakeSide, snakeSide)]
 body2 = [(375, 360, snakeSide, snakeSide), (390, 360, snakeSide, snakeSide), (405, 360, snakeSide, snakeSide),
@@ -55,6 +57,9 @@ mouseY = 330
 
 def new_pos():
     """ Generate random coordinates for mouse """
+    # ALEX: Given you have boundaryL and boundaryT defined - maybe use them
+    # here instead of 0? Also should the '15's here (and below) be snakeSide instead to
+    # make the game more configurable?
     mouseX = random.randrange(0, boundaryR, 15)
     mouseY = random.randrange(0, boundaryB, 15)
     return mouseX, mouseY
@@ -68,7 +73,15 @@ def drawMouse(mouseX, mouseY):
 
 
 # Winner screen
+# ALEX: Where you have "player1" and "player2" in your code, I would be tempted to replace with
+# variables named PLAYER_1_NAME and PLAYER_2_NAME (defined at the top of your code). That way if
+# you make a typo, the code will fail with an error about unrecognised variable name rather than
+# simply failing silently to do the right thing. E.g. PLAYER_1_NAME = "player1" then use
+# PLAYER_1_NAME everywhere else.
 def winner(player):
+    # There's quite a lot of repetition here. Could you have the 'if'
+    # statements just setting variables called dead_body, dead_snake and winning_colour
+    # then the 6 lines of common code in both functions could just be called once?
     if player == "player2":
         screen.fill(black)
         for segment in body1:
@@ -108,6 +121,9 @@ def collisions():
         winner("player1")
         return True
 
+    # ALEX: I think it would be clearer to do a 'return False' here, otherwise
+    # I think python implicitly returns None (which works, but is a bit confusing).
+
 
 # Function to draw grid
 def drawGrid():
@@ -135,6 +151,8 @@ class Snake(object):
         if direction == "R":
             if headx != boundaryR - 15:
                 self.body.append(((headx + 15), heady, snakeSide, snakeSide))
+                # ALEX: Looks like these two lines are repeated in all if conditions (8 times?!). Can you
+                # move them outside and just run once at the end?
                 if not Snake.eatMouse(self, mouseX, mouseY):
                     del self.body[0]
             else:
@@ -183,6 +201,9 @@ class Snake(object):
         if snakeHead == mouseB or snakeHead == mouseH:
             return True
 
+        # ALEX: I think it would be clearer to do a 'return False' here, otherwise
+        # I think python implicitly returns None (which works, but is a bit confusing).
+
 
 """ Main Loop"""
 
@@ -201,6 +222,10 @@ while running:
         # Arrow key player1 controls
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
+                # I think this would be simpler as
+                # if direction1 != "R" and direction1 != 0:
+                #   direction1 = "l"
+                # (and for all values below).
                 if direction1 == "R" or direction1 == 0:
                     pass
                 else:
@@ -269,6 +294,7 @@ while running:
 
     # Detect collisions and reset variables
     if collisions():
+        # ALEX: I would use 'None' rather than  as an initialisation for the snake directions.
         direction1 = 0
         direction2 = 0
         body1 = [(375, 300, snakeSide, snakeSide), (390, 300, snakeSide, snakeSide), (405, 300, snakeSide, snakeSide),
